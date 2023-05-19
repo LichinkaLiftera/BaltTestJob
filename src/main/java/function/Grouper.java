@@ -23,7 +23,7 @@ public class Grouper {
         this.file = file;
     }
 
-    public List<List<String>>getResult(){
+    public List<List<String>> getResult() {
         return result;
     }
 
@@ -34,53 +34,55 @@ public class Grouper {
         } catch (IOException e) {
             throw new RuntimeException();
         }
+        for (String str : stringList) {
 
-        for(String str : stringList){
             TreeSet<Integer> crossGroup = new TreeSet<>();   //Сет групп с совпадающими элементами
             List<WordEntity> newBlock = new ArrayList<>();//Список элементов не входящих в столбцы
 
-            String [] stringsInLine = str.split(";");  //Массив строк из линии
+            String[] stringsInLine = str.split(";");  //Массив строк из линии
 
-            for(int i = 0 ; i < stringsInLine.length ; i++){
+            for (int i = 0; i < stringsInLine.length; i++) {
 
                 String tempStr = stringsInLine[i];
-                
-                if(posStrGroup.size() == i){
+
+                if (posStrGroup.size() == i) {
                     posStrGroup.add(new HashMap<>());
                 }
 
-                if("".equals(tempStr.replaceAll("\"","").trim())){
+//                if("".equals(tempStr.replaceAll("\"","").trim())){
+//                    continue;
+//                }
+                if (tempStr.equals("")) {
                     continue;
                 }
 
-                Map<String,Integer> column = posStrGroup.get(i);
+                Map<String, Integer> column = posStrGroup.get(i);
                 Integer elGrNum = column.get(tempStr);
 
-                if(elGrNum != null){ //Если группа с этим номером объединена с другой -
-                                     // сохраняем номер группы с которой объедина
-                    while(unionGroup.containsKey(elGrNum)){
-                        elGrNum = unionGroup.get(elGrNum);
+                if (elGrNum != null) { //Если группа с этим номером объединена с другой - сохраняем номер группы с которой объедина
+                    while (unionGroup.containsKey(elGrNum)) { //<-!!!!!
+                        elGrNum = unionGroup.get(elGrNum);}  // <-!!!!!
                         crossGroup.add(elGrNum);
-                    }
                 } else {
-                    newBlock.add(new WordEntity(i,tempStr));
+                    newBlock.add(new WordEntity(tempStr, i));
                 }
             }
 
-            int groupNumber;
+            Integer groupNumber;
 
-            if(crossGroup.isEmpty()){  //Инициализация номера группы в обработку
+            if (crossGroup.isEmpty()) {  //Инициализация номера группы в обработку
+                groupNumber = result.size();
+
                 result.add(new ArrayList<>());
-                groupNumber = result.size() - 1;
             } else {
                 groupNumber = crossGroup.first();
             }
-            for (WordEntity entity : newBlock){
-                posStrGroup.get(entity.getIndex()).put(entity.getValue(),groupNumber);
+            for (WordEntity entity : newBlock) {
+                posStrGroup.get(entity.index).put(entity.value, groupNumber);
             }
-            for(int grNumber : crossGroup){    //Перебор групп имеющих такой элемент
-                if(grNumber != groupNumber){
-                    unionGroup.put(grNumber,groupNumber); //Вносим группы на объединение
+            for (Integer grNumber : crossGroup) {    //Перебор групп имеющих такой элемент
+                if (!Objects.equals(grNumber, groupNumber)) {
+                    unionGroup.put(grNumber, groupNumber); //Вносим группы на объединение
                     result.get(groupNumber).addAll(result.get(grNumber)); //Объединение
                     result.set(grNumber, null); //Обнуляем текущую группу
                 }
@@ -88,8 +90,13 @@ public class Grouper {
             result.get(groupNumber).add(str);
         }
         result.removeAll(Collections.singleton(null)); //Удаляем синглы
-        for(List<String>list : result){
-            System.out.println(list);
+        System.out.println(posStrGroup.size());
+        int elements = 0;
+        for (Map<String, Integer> el : posStrGroup) {
+            elements += el.size();
         }
+        System.out.println(elements);
+
+
     }
 }
