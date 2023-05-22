@@ -2,10 +2,10 @@ package entity;
 
 public class WordEntity {
 
-    private int index;
-    private String value;
+    public int index;
+    public String value;
 
-    public WordEntity(int index, String value){
+    public WordEntity(String value, int index) {
         this.index = index;
         this.value = value;
     }
@@ -16,5 +16,9 @@ public class WordEntity {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BaltTestJob:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/BaltTestJob_jar</output-path>
+    <root id="archive" name="BaltTestJob.jar">
+      <element id="module-output" name="BaltTestJob" />
+    </root>
+  </artifact>
+</component>
